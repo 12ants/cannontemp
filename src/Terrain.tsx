@@ -783,9 +783,138 @@ export function StoneArch({ position, rotation = [0, 0, 0], scale = 1 }: any) {
   );
 }
 
-export function RuralTown() {
+export function GeneralStore({ position = [0, 0, 0], rotation = [0, 0, 0] }: any) {
   return (
-    <group>
+    <group position={position} rotation={rotation}>
+      {/* Main Building */}
+      <mesh position={[0, 2, 0]} castShadow receiveShadow>
+        <boxGeometry args={[8, 4, 6]} />
+        <meshStandardMaterial color="#78350f" roughness={0.9} />
+      </mesh>
+      {/* Roof */}
+      <mesh position={[0, 4.5, 0]} castShadow receiveShadow>
+        <coneGeometry args={[5.5, 2, 4]} rotation={[0, Math.PI / 4, 0]} />
+        <meshStandardMaterial color="#451a03" roughness={0.9} />
+      </mesh>
+      {/* Awning */}
+      <mesh position={[0, 3, 3.5]} rotation={[-Math.PI / 6, 0, 0]} castShadow>
+        <boxGeometry args={[8.2, 2, 0.2]} />
+        <meshStandardMaterial color="#1e3a8a" roughness={0.8} />
+      </mesh>
+      {/* Display Windows */}
+      <mesh position={[2, 1.5, 3.01]}>
+        <planeGeometry args={[2.5, 1.5]} />
+        <meshStandardMaterial color="#fef08a" emissive="#fef08a" emissiveIntensity={0.8} />
+      </mesh>
+      <mesh position={[-2, 1.5, 3.01]}>
+        <planeGeometry args={[2.5, 1.5]} />
+        <meshStandardMaterial color="#fef08a" emissive="#fef08a" emissiveIntensity={0.8} />
+      </mesh>
+      {/* Door */}
+      <mesh position={[0, 1.25, 3.01]}>
+        <planeGeometry args={[1.2, 2.5]} />
+        <meshStandardMaterial color="#292524" />
+      </mesh>
+      {/* Sign */}
+      <mesh position={[0, 4.5, 3.1]} castShadow>
+        <boxGeometry args={[3, 0.8, 0.2]} />
+        <meshStandardMaterial color="#fcd34d" roughness={0.6} />
+      </mesh>
+      {/* Warm glow from store */}
+      <pointLight position={[0, 2, 4]} intensity={1.5} distance={12} color="#fef08a" />
+    </group>
+  );
+}
+
+export function BlacksmithForge({ position = [0, 0, 0], rotation = [0, 0, 0] }: any) {
+  return (
+    <group position={position} rotation={rotation}>
+      {/* Main Structure (Open front) */}
+      <mesh position={[0, 2, -1]} castShadow receiveShadow>
+        <boxGeometry args={[7, 4, 4]} />
+        <meshStandardMaterial color="#292524" roughness={0.9} />
+      </mesh>
+      {/* Roof */}
+      <mesh position={[0, 4.2, -0.5]} rotation={[Math.PI / 12, 0, 0]} castShadow>
+        <boxGeometry args={[7.5, 0.3, 6]} />
+        <meshStandardMaterial color="#1c1917" roughness={0.9} />
+      </mesh>
+      {/* Forge / Oven */}
+      <mesh position={[2, 1.5, -2]} castShadow receiveShadow>
+        <boxGeometry args={[2.5, 3, 2]} />
+        <meshStandardMaterial color="#44403c" roughness={0.9} />
+      </mesh>
+      {/* Glowing Coals */}
+      <mesh position={[2, 1, -1.2]}>
+        <boxGeometry args={[1.8, 0.5, 1]} />
+        <meshStandardMaterial color="#ea580c" emissive="#ea580c" emissiveIntensity={2} />
+      </mesh>
+      <pointLight position={[2, 1.5, -0.5]} intensity={2.5} distance={15} color="#ea580c" />
+      {/* Chimney */}
+      <mesh position={[2, 5, -2]} castShadow>
+        <cylinderGeometry args={[0.4, 0.5, 3, 4]} />
+        <meshStandardMaterial color="#1c1917" roughness={0.9} />
+      </mesh>
+      {/* Anvil */}
+      <mesh position={[-1, 0.6, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1.2, 0.4, 0.6]} />
+        <meshStandardMaterial color="#52525b" metalness={0.8} roughness={0.4} />
+      </mesh>
+      <mesh position={[-1, 0.2, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.4, 0.6, 0.4, 4]} />
+        <meshStandardMaterial color="#3f3f46" />
+      </mesh>
+      {/* Water Trough */}
+      <mesh position={[-2.5, 0.4, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1, 0.8, 1.5]} />
+        <meshStandardMaterial color="#451a03" roughness={0.9} />
+      </mesh>
+      <mesh position={[-2.5, 0.81, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.8, 1.3]} />
+        <meshStandardMaterial color="#38bdf8" roughness={0.1} metalness={0.8} />
+      </mesh>
+    </group>
+  );
+}
+
+export function DilapidatedShed({ position = [0, 0, 0], rotation = [0, 0, 0] }: any) {
+  return (
+    <group position={position} rotation={rotation}>
+      {/* Base structure - slightly tilted */}
+      <group rotation={[0.05, 0, 0.08]}>
+        <mesh position={[0, 1.5, 0]} castShadow receiveShadow>
+          <boxGeometry args={[4, 3, 4]} />
+          <meshStandardMaterial color="#27272a" roughness={1} />
+        </mesh>
+        {/* Broken Roof */}
+        <mesh position={[0, 3.2, 0]} rotation={[0, 0, -0.1]} castShadow receiveShadow>
+          <boxGeometry args={[4.5, 0.2, 4.5]} />
+          <meshStandardMaterial color="#18181b" roughness={1} />
+        </mesh>
+        {/* Missing/Crooked Planks */}
+        <mesh position={[1, 1.5, 2.05]} rotation={[0, 0, 0.2]} castShadow>
+          <boxGeometry args={[0.4, 2.5, 0.05]} />
+          <meshStandardMaterial color="#3f3f46" roughness={1} />
+        </mesh>
+        <mesh position={[-0.5, 1.2, 2.05]} rotation={[0, 0, -0.15]} castShadow>
+          <boxGeometry args={[0.4, 2, 0.05]} />
+          <meshStandardMaterial color="#3f3f46" roughness={1} />
+        </mesh>
+        {/* Dark interior illusion (hole) */}
+        <mesh position={[0.2, 1.5, 2.01]}>
+          <planeGeometry args={[1.5, 2]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+      </group>
+      {/* Creepy glow inside */}
+      <pointLight position={[0, 1.5, 0]} intensity={1} distance={6} color="#a855f7" />
+    </group>
+  );
+}
+
+export function RuralTown({ position = [0, 0, 0] }: { position?: [number, number, number] }) {
+  return (
+    <group position={position}>
       {/* Main Street */}
       <Road position={[0, 0, 0]} length={400} width={16} />
       
@@ -797,7 +926,8 @@ export function RuralTown() {
       <Well position={[30, 0, 30]} scale={1.5} />
       <TownCampfire position={[38, 0, 38]} />
       <MagicalTree position={[20, 0, 20]} scale={2.5} />
-      <Tree position={[40, 0, 20]} scale={2.5} />
+      <BlacksmithForge position={[40, 0, 20]} rotation={[0, -Math.PI / 2, 0]} />
+      <Tree position={[45, 0, 25]} scale={2.5} />
       <Tree position={[20, 0, 40]} scale={1.8} />
       <MagicalTree position={[40, 0, 40]} scale={2.2} />
       
@@ -827,6 +957,15 @@ export function RuralTown() {
       <House position={[20, 0, -20]} rotation={[0, 0, 0]} color="#7f1d1d" roofColor="#450a0a" />
       <House position={[40, 0, -20]} rotation={[0, 0, 0]} color="#3f3f46" roofColor="#18181b" />
       <House position={[60, 0, -20]} rotation={[0, 0, 0]} color="#78350f" roofColor="#451a03" />
+
+      {/* General Store */}
+      <GeneralStore position={[-20, 0, -40]} rotation={[0, 0, 0]} />
+      <Barrel position={[-16, 0, -36]} />
+      <Barrel position={[-15, 0, -36]} />
+      
+      {/* Dilapidated Shed */}
+      <DilapidatedShed position={[-60, 0, -40]} rotation={[0, Math.PI / 4, 0]} />
+      <GlowingMushroom position={[-58, 0, -38]} scale={1.5} color="#a855f7" />
 
       {/* Town Entrance Archways */}
       <StoneArch position={[0, 0, 100]} scale={1.5} />
@@ -962,6 +1101,140 @@ export function Road({ position = [0, 0, 0], rotation = [0, 0, 0], length = 1000
       <mesh position={[(roadWidth / 2 + sidewalkWidth / 2), sidewalkHeight / 2, 0]} receiveShadow castShadow>
         <boxGeometry args={[sidewalkWidth, sidewalkHeight, length]} />
         <meshStandardMaterial color="#555555" roughness={0.9} />
+      </mesh>
+    </group>
+  );
+}
+
+export function StartingArea({ position = [0, 0, 0] }: { position?: [number, number, number] }) {
+  return (
+    <group position={position}>
+      {/* Dirt Path leading towards town */}
+      <mesh position={[35, 0.02, 35]} rotation={[-Math.PI / 2, 0, -Math.PI / 4]} receiveShadow>
+        <planeGeometry args={[8, 100]} />
+        <meshStandardMaterial color="#574c3a" roughness={1} />
+      </mesh>
+
+      {/* Campfire */}
+      <TownCampfire position={[5, 0, -5]} />
+
+      {/* Dead Trees / Scrubs */}
+      <group position={[-8, 0, -10]}>
+        <mesh position={[0, 2, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.2, 0.4, 4, 5]} />
+          <meshStandardMaterial color="#3f3f46" roughness={0.9} />
+        </mesh>
+        <mesh position={[0.5, 3, 0]} rotation={[0, 0, Math.PI / 4]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.1, 0.2, 2, 4]} />
+          <meshStandardMaterial color="#3f3f46" roughness={0.9} />
+        </mesh>
+      </group>
+
+      <group position={[10, 0, 5]}>
+        <mesh position={[0, 1.5, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.15, 0.3, 3, 5]} />
+          <meshStandardMaterial color="#3f3f46" roughness={0.9} />
+        </mesh>
+      </group>
+
+      <group position={[-15, 0, 15]}>
+        <mesh position={[0, 2.5, 0]} rotation={[0.2, 0, 0.1]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.25, 0.5, 5, 5]} />
+          <meshStandardMaterial color="#3f3f46" roughness={0.9} />
+        </mesh>
+      </group>
+
+      {/* Broken Down Vehicle (Simplified) */}
+      <group position={[-6, 0.5, 2]} rotation={[0, Math.PI / 6, 0]}>
+        <mesh position={[0, 0.5, 0]} castShadow receiveShadow>
+          <boxGeometry args={[2, 1, 4]} />
+          <meshStandardMaterial color="#7f1d1d" roughness={0.8} metalness={0.2} />
+        </mesh>
+        <mesh position={[0, 1.25, -0.5]} castShadow receiveShadow>
+          <boxGeometry args={[1.8, 0.8, 2]} />
+          <meshStandardMaterial color="#450a0a" roughness={0.9} />
+        </mesh>
+        {/* Missing wheels */}
+        <mesh position={[-1, -0.2, 1.2]} rotation={[0, 0, Math.PI / 2]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.4, 0.4, 0.2, 16]} />
+          <meshStandardMaterial color="#1c1917" roughness={0.9} />
+        </mesh>
+        <mesh position={[1, -0.2, -1.2]} rotation={[0, 0, Math.PI / 2]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.4, 0.4, 0.2, 16]} />
+          <meshStandardMaterial color="#1c1917" roughness={0.9} />
+        </mesh>
+        {/* Smoke from engine */}
+        <TownFireflies position={[0, 1, 1.5]} count={10} spread={1} />
+      </group>
+
+      {/* Wooden Sign pointing to town */}
+      <group position={[4, 0, 10]} rotation={[0, -Math.PI / 8, 0]}>
+        <mesh position={[0, 1, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.1, 0.1, 2]} />
+          <meshStandardMaterial color="#451a03" />
+        </mesh>
+        <mesh position={[0.2, 1.5, 0]} castShadow receiveShadow>
+          <boxGeometry args={[1.5, 0.4, 0.05]} />
+          <meshStandardMaterial color="#78350f" />
+        </mesh>
+        {/* Sign Text (Simplified as a dark strip) */}
+        <mesh position={[0.2, 1.5, 0.03]} castShadow receiveShadow>
+          <boxGeometry args={[1.2, 0.1, 0.01]} />
+          <meshStandardMaterial color="#292524" />
+        </mesh>
+      </group>
+
+      {/* Broken Fence */}
+      <group position={[15, 0, -5]} rotation={[0, Math.PI / 6, 0]}>
+        <mesh position={[0, 0.5, 0]} rotation={[0, 0, 0.2]} castShadow receiveShadow>
+          <boxGeometry args={[0.1, 1, 0.1]} />
+          <meshStandardMaterial color="#451a03" />
+        </mesh>
+        <mesh position={[2, 0.5, 0]} rotation={[0, 0, -0.1]} castShadow receiveShadow>
+          <boxGeometry args={[0.1, 1, 0.1]} />
+          <meshStandardMaterial color="#451a03" />
+        </mesh>
+        <mesh position={[1, 0.8, 0]} rotation={[0, 0, 0.1]} castShadow receiveShadow>
+          <boxGeometry args={[2.2, 0.1, 0.05]} />
+          <meshStandardMaterial color="#451a03" />
+        </mesh>
+        <mesh position={[1, 0.3, 0]} rotation={[0, 0, -0.2]} castShadow receiveShadow>
+          <boxGeometry args={[2.2, 0.1, 0.05]} />
+          <meshStandardMaterial color="#451a03" />
+        </mesh>
+        {/* Fallen fence piece */}
+        <mesh position={[4, 0.05, 1]} rotation={[Math.PI / 2, 0.2, 0]} castShadow receiveShadow>
+          <boxGeometry args={[2, 0.1, 0.05]} />
+          <meshStandardMaterial color="#451a03" />
+        </mesh>
+      </group>
+
+      {/* Scattered Debris */}
+      <mesh position={[-2, 0.1, 8]} rotation={[Math.random(), Math.random(), Math.random()]} castShadow receiveShadow>
+        <boxGeometry args={[0.5, 0.2, 0.8]} />
+        <meshStandardMaterial color="#3f3f46" roughness={0.9} />
+      </mesh>
+      <mesh position={[3, 0.1, -12]} rotation={[Math.random(), Math.random(), Math.random()]} castShadow receiveShadow>
+        <boxGeometry args={[0.6, 0.1, 0.4]} />
+        <meshStandardMaterial color="#57534e" roughness={0.9} />
+      </mesh>
+      <mesh position={[-12, 0.1, -2]} rotation={[Math.random(), Math.random(), Math.random()]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.2, 0.2, 0.8, 6]} />
+        <meshStandardMaterial color="#78350f" roughness={0.9} />
+      </mesh>
+
+      {/* Rocks */}
+      <mesh position={[8, 0.4, -8]} castShadow receiveShadow>
+        <dodecahedronGeometry args={[0.8]} />
+        <meshStandardMaterial color="#57534e" roughness={0.9} />
+      </mesh>
+      <mesh position={[-10, 0.6, 8]} castShadow receiveShadow>
+        <dodecahedronGeometry args={[1.2]} />
+        <meshStandardMaterial color="#57534e" roughness={0.9} />
+      </mesh>
+      <mesh position={[-3, 0.2, -4]} castShadow receiveShadow>
+        <dodecahedronGeometry args={[0.4]} />
+        <meshStandardMaterial color="#57534e" roughness={0.9} />
       </mesh>
     </group>
   );

@@ -6,7 +6,7 @@ import { EffectComposer, Bloom, Vignette, ToneMapping, N8AO } from '@react-three
 import { Vehicle } from './Vehicle';
 import { Ground } from './Ground';
 import { ProceduralWorld } from './ProceduralWorld';
-import { RuralTown } from './Terrain';
+import { RuralTown, StartingArea } from './Terrain';
 import { DayNightCycle } from './DayNightCycle';
 import { DebugWindow } from './DebugWindow';
 import { Effects } from './Effects';
@@ -107,7 +107,10 @@ export default function App() {
       />
       
       {/* Rural Town Environment */}
-      <RuralTown />
+      <RuralTown position={[200, 0, 200]} />
+      
+      {/* Desolate Starting Area */}
+      <StartingArea position={[0, 0, 0]} />
     </>
   ), [carType, cameraMode, cameraDistance, steeringType, playerState]);
 

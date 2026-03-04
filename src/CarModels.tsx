@@ -55,80 +55,218 @@ function HeadLight({ position, args, geometry: Geometry = 'boxGeometry', rotatio
 }
 
 function CarInterior({ position, color = "#27272a" }: { position: [number, number, number], color?: string }) {
+  const steeringWheelRef = useRef<THREE.Group>(null);
+  const leftArmRef = useRef<THREE.Mesh>(null);
+  const rightArmRef = useRef<THREE.Mesh>(null);
+
+  useFrame(() => {
+    // Animate steering wheel based on input
+    const steering = debugData.steering; // -1 to 1
+    if (steeringWheelRef.current) {
+      steeringWheelRef.current.rotation.z = -steering * Math.PI * 0.8;
+    }
+    
+    // Animate driver arms to follow steering wheel
+    if (leftArmRef.current && rightArmRef.current) {
+      // Base rotation
+      leftArmRef.current.rotation.set(-Math.PI / 4, 0, Math.PI / 8);
+      rightArmRef.current.rotation.set(-Math.PI / 4, 0, -Math.PI / 8);
+      
+      // Add steering offset
+      leftArmRef.current.rotation.x += steering * 0.2;
+      leftArmRef.current.rotation.z += steering * 0.3;
+      
+      rightArmRef.current.rotation.x -= steering * 0.2;
+      rightArmRef.current.rotation.z += steering * 0.3;
+    }
+  });
+
   return (
     <group position={position}>
-      {/* Dashboard */}
+      {/* Dashboard Base */}
       <mesh position={[0, 0.1, 0.6]} castShadow receiveShadow>
-        <boxGeometry args={[1.2, 0.2, 0.3]} />
+        <boxGeometry args={[1.3, 0.25, 0.35]} />
         <meshStandardMaterial color={color} roughness={0.9} />
       </mesh>
-      {/* Instrument Cluster */}
-      <mesh position={[0.3, 0.22, 0.55]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
-        <boxGeometry args={[0.3, 0.1, 0.1]} />
+      
+      {/* Instrument Cluster Binnacle */}
+      <mesh position={[0.3, 0.25, 0.55]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.35, 0.15, 0.15]} />
         <meshStandardMaterial color="#111111" roughness={0.9} />
       </mesh>
+      
+      {/* Dials (Speedometer & Tachometer) */}
+      <mesh position={[0.25, 0.25, 0.47]} rotation={[Math.PI / 2 - Math.PI / 12, 0, 0]}>
+        <cylinderGeometry args={[0.05, 0.05, 0.01, 16]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.2} />
+      </mesh>
+      <mesh position={[0.35, 0.25, 0.47]} rotation={[Math.PI / 2 - Math.PI / 12, 0, 0]}>
+        <cylinderGeometry args={[0.05, 0.05, 0.01, 16]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.2} />
+      </mesh>
+
+      {/* Center Infotainment Screen */}
+      <mesh position={[0, 0.2, 0.48]} rotation={[-Math.PI / 16, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.2, 0.12, 0.02]} />
+        <meshStandardMaterial color="#000000" roughness={0.2} />
+      </mesh>
+      <mesh position={[0, 0.2, 0.47]} rotation={[-Math.PI / 16, 0, 0]}>
+        <planeGeometry args={[0.18, 0.1]} />
+        <meshStandardMaterial color="#0ea5e9" emissive="#0ea5e9" emissiveIntensity={0.5} />
+      </mesh>
+
+      {/* AC Vents */}
+      <mesh position={[-0.15, 0.2, 0.48]} rotation={[-Math.PI / 16, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.06, 0.04, 0.02]} />
+        <meshStandardMaterial color="#111111" />
+      </mesh>
+      <mesh position={[0.15, 0.2, 0.48]} rotation={[-Math.PI / 16, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.06, 0.04, 0.02]} />
+        <meshStandardMaterial color="#111111" />
+      </mesh>
+
       {/* Center Console */}
       <mesh position={[0, -0.05, 0.1]} castShadow receiveShadow>
-        <boxGeometry args={[0.2, 0.15, 0.8]} />
+        <boxGeometry args={[0.25, 0.15, 0.8]} />
         <meshStandardMaterial color={color} roughness={0.9} />
       </mesh>
+      
       {/* Gear Shifter */}
-      <mesh position={[0, 0.1, 0.2]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.02, 0.02, 0.15, 8]} />
-        <meshStandardMaterial color="#e5e7eb" metalness={0.8} roughness={0.2} />
-      </mesh>
-      <mesh position={[0, 0.18, 0.2]} castShadow receiveShadow>
-        <sphereGeometry args={[0.04, 16, 16]} />
-        <meshStandardMaterial color="#111111" />
-      </mesh>
+      <group position={[0, 0.1, 0.2]}>
+        <mesh castShadow receiveShadow>
+          <cylinderGeometry args={[0.015, 0.02, 0.15, 8]} />
+          <meshStandardMaterial color="#e5e7eb" metalness={0.8} roughness={0.2} />
+        </mesh>
+        <mesh position={[0, 0.08, 0]} castShadow receiveShadow>
+          <sphereGeometry args={[0.035, 16, 16]} />
+          <meshStandardMaterial color="#111111" roughness={0.5} />
+        </mesh>
+        {/* Shifter Boot */}
+        <mesh position={[0, -0.05, 0]} castShadow receiveShadow>
+          <coneGeometry args={[0.06, 0.08, 8]} />
+          <meshStandardMaterial color="#111111" roughness={0.9} />
+        </mesh>
+      </group>
+
       {/* Steering Column */}
-      <mesh position={[0.3, 0.1, 0.4]} rotation={[Math.PI / 6, 0, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.05, 0.05, 0.4, 8]} />
+      <mesh position={[0.3, 0.15, 0.4]} rotation={[Math.PI / 6, 0, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.05, 0.05, 0.3, 8]} />
         <meshStandardMaterial color="#111111" />
       </mesh>
-      {/* Steering Wheel */}
-      <mesh position={[0.3, 0.25, 0.25]} rotation={[Math.PI / 3, 0, 0]} castShadow receiveShadow>
-        <torusGeometry args={[0.15, 0.03, 8, 16]} />
-        <meshStandardMaterial color="#111111" />
-      </mesh>
+      
+      {/* Steering Wheel Group (Animated) */}
+      <group position={[0.3, 0.25, 0.25]} rotation={[Math.PI / 3, 0, 0]} ref={steeringWheelRef}>
+        {/* Rim */}
+        <mesh castShadow receiveShadow>
+          <torusGeometry args={[0.16, 0.025, 16, 32]} />
+          <meshStandardMaterial color="#111111" roughness={0.8} />
+        </mesh>
+        {/* Center Hub */}
+        <mesh position={[0, 0, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.04, 0.04, 0.02, 16]} />
+          <meshStandardMaterial color="#111111" />
+        </mesh>
+        {/* Spokes */}
+        <mesh position={[-0.08, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.015, 0.015, 0.16, 8]} />
+          <meshStandardMaterial color="#e5e7eb" metalness={0.6} />
+        </mesh>
+        <mesh position={[0.08, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.015, 0.015, 0.16, 8]} />
+          <meshStandardMaterial color="#e5e7eb" metalness={0.6} />
+        </mesh>
+        <mesh position={[0, -0.08, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.015, 0.015, 0.16, 8]} />
+          <meshStandardMaterial color="#e5e7eb" metalness={0.6} />
+        </mesh>
+      </group>
+
       {/* Driver Seat */}
       <mesh position={[0.3, -0.1, -0.2]} castShadow receiveShadow>
-        <boxGeometry args={[0.4, 0.1, 0.4]} />
+        <boxGeometry args={[0.45, 0.15, 0.45]} />
         <meshStandardMaterial color={color} roughness={0.9} />
       </mesh>
-      <mesh position={[0.3, 0.2, -0.35]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
-        <boxGeometry args={[0.4, 0.5, 0.1]} />
+      <mesh position={[0.3, 0.25, -0.4]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.45, 0.6, 0.1]} />
         <meshStandardMaterial color={color} roughness={0.9} />
       </mesh>
+      {/* Headrest */}
+      <mesh position={[0.3, 0.6, -0.45]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.25, 0.15, 0.1]} />
+        <meshStandardMaterial color={color} roughness={0.9} />
+      </mesh>
+
       {/* Passenger Seat */}
       <mesh position={[-0.3, -0.1, -0.2]} castShadow receiveShadow>
-        <boxGeometry args={[0.4, 0.1, 0.4]} />
+        <boxGeometry args={[0.45, 0.15, 0.45]} />
         <meshStandardMaterial color={color} roughness={0.9} />
       </mesh>
-      <mesh position={[-0.3, 0.2, -0.35]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
-        <boxGeometry args={[0.4, 0.5, 0.1]} />
+      <mesh position={[-0.3, 0.25, -0.4]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.45, 0.6, 0.1]} />
         <meshStandardMaterial color={color} roughness={0.9} />
       </mesh>
-      {/* Driver (Simple representation) */}
+      <mesh position={[-0.3, 0.6, -0.45]} rotation={[-Math.PI / 12, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.25, 0.15, 0.1]} />
+        <meshStandardMaterial color={color} roughness={0.9} />
+      </mesh>
+
+      {/* Driver (Detailed) */}
       <group position={[0.3, 0.1, -0.2]}>
         {/* Torso */}
-        <mesh position={[0, 0.15, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.3, 0.4, 0.2]} />
-          <meshStandardMaterial color="#3b82f6" /> {/* Blue shirt */}
+        <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
+          <boxGeometry args={[0.35, 0.45, 0.2]} />
+          <meshStandardMaterial color="#1e40af" /> {/* Dark Blue jacket */}
         </mesh>
-        {/* Head */}
+        
+        {/* Neck */}
         <mesh position={[0, 0.45, 0]} castShadow receiveShadow>
-          <sphereGeometry args={[0.12, 16, 16]} />
-          <meshStandardMaterial color="#fcd34d" /> {/* Skin tone */}
+          <cylinderGeometry args={[0.04, 0.05, 0.1, 8]} />
+          <meshStandardMaterial color="#fcd34d" />
         </mesh>
-        {/* Arms */}
-        <mesh position={[-0.2, 0.15, 0.15]} rotation={[-Math.PI / 4, 0, Math.PI / 8]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.04, 0.04, 0.35, 8]} />
-          <meshStandardMaterial color="#3b82f6" />
+
+        {/* Head */}
+        <group position={[0, 0.55, 0]}>
+          <mesh castShadow receiveShadow>
+            <sphereGeometry args={[0.12, 16, 16]} />
+            <meshStandardMaterial color="#fcd34d" /> {/* Skin tone */}
+          </mesh>
+          {/* Hair / Cap */}
+          <mesh position={[0, 0.08, 0]} castShadow receiveShadow>
+            <cylinderGeometry args={[0.13, 0.13, 0.1, 16]} />
+            <meshStandardMaterial color="#b91c1c" /> {/* Red cap */}
+          </mesh>
+          {/* Cap Brim */}
+          <mesh position={[0, 0.05, 0.1]} rotation={[0.1, 0, 0]} castShadow receiveShadow>
+            <boxGeometry args={[0.15, 0.02, 0.15]} />
+            <meshStandardMaterial color="#b91c1c" />
+          </mesh>
+          {/* Sunglasses */}
+          <mesh position={[0, 0, 0.11]} castShadow receiveShadow>
+            <boxGeometry args={[0.18, 0.05, 0.02]} />
+            <meshStandardMaterial color="#111111" roughness={0.1} metalness={0.8} />
+          </mesh>
+        </group>
+
+        {/* Left Arm */}
+        <mesh ref={leftArmRef} position={[-0.22, 0.2, 0.15]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.045, 0.04, 0.4, 8]} />
+          <meshStandardMaterial color="#1e40af" />
+          {/* Hand */}
+          <mesh position={[0, -0.2, 0]} castShadow receiveShadow>
+            <sphereGeometry args={[0.05, 8, 8]} />
+            <meshStandardMaterial color="#fcd34d" />
+          </mesh>
         </mesh>
-        <mesh position={[0.2, 0.15, 0.15]} rotation={[-Math.PI / 4, 0, -Math.PI / 8]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.04, 0.04, 0.35, 8]} />
-          <meshStandardMaterial color="#3b82f6" />
+
+        {/* Right Arm */}
+        <mesh ref={rightArmRef} position={[0.22, 0.2, 0.15]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.045, 0.04, 0.4, 8]} />
+          <meshStandardMaterial color="#1e40af" />
+          {/* Hand */}
+          <mesh position={[0, -0.2, 0]} castShadow receiveShadow>
+            <sphereGeometry args={[0.05, 8, 8]} />
+            <meshStandardMaterial color="#fcd34d" />
+          </mesh>
         </mesh>
       </group>
     </group>
